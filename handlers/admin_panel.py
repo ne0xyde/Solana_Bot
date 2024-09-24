@@ -20,23 +20,23 @@ async def get_profile(message: Message, state: FSMContext):
         try:
             all_users_data = await get_all_users(count=False)
             admin_text = (
-                f'👥 В базе данных <b>{len(all_users_data)}</b> человек. Вот короткая информация по каждому:\n\n'
+                f'👥 The database contains <b>{len(all_users_data)}</b> users. Brief information:\n\n'
             )
 
             for user in all_users_data:
                 admin_text += (
-                    f'👤 Телеграм ID: {user.user_id}\n'
-                    f'📝 Полное имя: {user.full_name}\n'
+                    f'👤 Telegram ID: {user.user_id}\n'
+                    f'📝 Full name: {user.full_name}\n'
                 )
 
                 if user.user_login is not None:
-                    admin_text += f'🔑 Логин: {user.user_login}\n'
+                    admin_text += f'🔑 Login: {user.user_login}\n'
 
                 if user.refer_id is not None:
-                    admin_text += f'👨‍💼 Его пригласил: {user.refer_id}\n'
+                    admin_text += f'👨‍💼 Was invited by: {user.refer_id}\n'
                 referrals_count = await count_referrals(user.user_id)
                 admin_text += (
-                    f'👥 Он пригласил: {referrals_count} человек\n'
+                    f'👥 Has referrals: {referrals_count} users\n'
                     f'\n〰️〰️〰️〰️〰️〰️〰️〰️〰️\n\n'
                 )
         except Exception as ex:
