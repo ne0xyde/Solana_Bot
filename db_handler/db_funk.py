@@ -5,7 +5,7 @@ from sqlalchemy import func
 # функция, для получения информации по конкретному пользователю
 async def get_user_data(user_id: int, table_name=Users):
     async with async_session() as session:
-        print(f'\n\n\n user_id = {user_id}\n\n\n')
+        # print(f'\n user_id = {user_id}\n')
         result = await session.execute(select(table_name).where(table_name.user_id == str(user_id)))
         return result.scalars().all()
 
