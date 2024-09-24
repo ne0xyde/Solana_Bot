@@ -1,0 +1,4 @@
+aiogram~=3.7.0
+python-decouple~=3.8
+asyncmy~=0.2.9
+sqlalchemy~=2.0.31
