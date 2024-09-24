@@ -71,14 +71,14 @@ async def cmd_start(message: Message, command: CommandObject, state: FSMContext)
             if user.solana_address is not None:
                 sol_balance = await get_solana_balance(user.solana_address)
                 response_text = (f"Welcome back {user.full_name},\n"
-                                 f"Your solana wallet:\n `{user.solana_address}`\n"
+                                 f"Your solana wallet:\n <code>{user.solana_address}</code>\n"
                                  f"you're wallet balance is `{sol_balance}` SOL,\n"
                                  f"{universe_text}"
                                  )
             else:
                 solana_address = await get_solana_address(message.from_user.id)
                 response_text = (f"Welcome back {user.full_name},\n"
-                                 f"Your solana wallet:\n `{solana_address}`\n"
+                                 f"Your solana wallet:\n <code>{solana_address}</code>\n"
                                  f"Before starting trading, please send some SOL to your Solana wallet address,\n"
                                  f"{universe_text}"
                                  )
@@ -95,7 +95,7 @@ async def cmd_start(message: Message, command: CommandObject, state: FSMContext)
             'refer_id': refer_id
         })
         response_text = (f'{message.from_user.full_name}, we are glad you have joined us! Welcome!'
-                         f'Your new solana wallet:\n `{solana_address}`\n'
+                         f'Your new solana wallet:\n <code>{solana_address}</code>\n'
                          'Before starting trading, please send some SOL to your Solana wallet address, '
                          )
         if refer_id != 'None':
@@ -123,8 +123,8 @@ async def cmd_refresh(message: Message, state: FSMContext):
     await delete_previous_messages(message, state)
     solana_address = await get_solana_address(message.from_user.id)
     sol_balance = await get_solana_balance(solana_address)
-    bot_reply = await message.answer(f"Your Solana wallet: `{solana_address}`\n"
-                                     f"you're wallet balance is `{sol_balance}` SOL",
+    bot_reply = await message.answer(f"Your Solana wallet: <code>{solana_address}</code>\n"
+                                     f"you're wallet balance is <code>{sol_balance}</code> SOL",
                                      reply_markup=wallet_page(message.from_user.id))
     await state.update_data(bot_message_id=bot_reply.message_id)
 
@@ -137,8 +137,8 @@ async def cmd_refresh(message: Message, state: FSMContext):
     await delete_previous_messages(message, state)
     solana_address = await get_solana_address(message.from_user.id)
     sol_balance = await get_solana_balance(solana_address)
-    bot_reply = await message.answer(f"Your Solana wallet: **{solana_address}**\n"
-                                     f"you're wallet balance is `'{sol_balance}'` SOL",
+    bot_reply = await message.answer(f"Your Solana wallet: <code>{solana_address}</code>\n"
+                                     f"you're wallet balance is <code>{sol_balance}</code> SOL",
                                      reply_markup=wallet_page(message.from_user.id))
     await state.update_data(bot_message_id=bot_reply.message_id)
 
@@ -151,8 +151,8 @@ async def cmd_change_wallet(message: Message, state: FSMContext):
     await delete_previous_messages(message, state)
     solana_address = await get_solana_address(message.from_user.id)
     sol_balance = await get_solana_balance(solana_address)
-    bot_reply = await message.answer(f"Your Solana wallet: **{solana_address}**\n"
-                                     f"you're wallet balance is `'{sol_balance}'` SOL,\n"
+    bot_reply = await message.answer(f"Your Solana wallet: <code>{solana_address}</code>\n"
+                                     f"you're wallet balance is <code>{sol_balance}</code> SOL,\n"
                                      f"Please enter your new Solana wallet address:",
                                      reply_markup=wallet_page(message.from_user.id))
     await state.update_data(bot_message_id=bot_reply.message_id)
@@ -174,7 +174,8 @@ async def process_new_wallet_address(message: Message, state: FSMContext):
 
     await state.clear()
 
-    await message.answer(f"Your Solana wallet address has been successfully updated to: `{new_wallet_address}`",
+    await message.answer(f"Your Solana wallet address has been successfully updated to: "
+                         f"<code>{new_wallet_address}</code>",
                          reply_markup=wallet_page(message.from_user.id))
 
 
@@ -199,8 +200,8 @@ async def cmd_send_sol(message: Message, state: FSMContext):
     await delete_previous_messages(message, state)
     solana_address = await get_solana_address(message.from_user.id)
     sol_balance = await get_solana_balance(solana_address)
-    bot_reply = await message.answer(f"Your Solana wallet: {solana_address}\n"
-                                     f"you're wallet balance is {sol_balance} SOL,\n"
+    bot_reply = await message.answer(f"Your Solana wallet: <code>{solana_address}</code>\n"
+                                     f"you're wallet balance is <code>{sol_balance}</code> SOL,\n"
                                      f"Please enter the wallet address to send:",
                                      reply_markup=main_kb(message.from_user.id))
     await state.update_data(bot_message_id=bot_reply.message_id)
@@ -223,7 +224,6 @@ async def capture_wallet_address(message: Message, state: FSMContext):
 
     await state.update_data(target_address=message.text)
     data = await state.get_data()
-    print(f'capture_wallet_address data = {data}\n type = {type(data)}')
     bot_reply = await message.answer('Done! Now send the amount to send:')
     await state.update_data(bot_message_id=bot_reply.message_id)
     await state.set_state(WalletEvents.target_value)
@@ -243,7 +243,6 @@ async def capture_balance(message: Message, state: FSMContext):
 
     await state.update_data(target_value=message.text)
     data = await state.get_data()
-    print(f'capture_balance data = {data}\n type = {type(data)}')
     # отправляем указанную сумму на адрес
 
     reply = await send_solana_to_wallet(message.from_user.id, data.get("target_address"), data.get("target_value"))
